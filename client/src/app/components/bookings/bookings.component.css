@@ -1,0 +1,20 @@
+.full-screen {
+    width: 100%;
+    padding-top: 128px;
+    height: 100%;
+    background-color: black;
+    display: flex;
+    background-repeat: no-repeat;
+    background-size: 40%;
+      background-position: right;
+    align-items: center;
+    justify-content: center;
+  }
+  a:hover{
+    transition: transform 0.9s ease;
+    transform: scale(1.2);
+}
+.card{
+    background-color: transparent;
+    box-shadow: 0 0 12px white;
+}

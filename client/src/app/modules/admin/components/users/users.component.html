@@ -1,0 +1,9 @@
+<div class="full-screen fade-in">
+    <div *ngFor="let user of users">
+        <div class="card bg-dark p-3 mb-3">
+            <p>User Id: {{user._id}}</p>
+        <p>Name: {{ user.firstname }}</p>
+        <p>Email: {{ user.email }}</p>
+        </div>
+      </div>    
+</div>

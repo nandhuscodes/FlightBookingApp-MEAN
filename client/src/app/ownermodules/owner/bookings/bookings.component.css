@@ -1,0 +1,32 @@
+.bookings-container{
+    list-style-type: none;
+}
+.card{
+    background-color: black;
+    color: white;
+    box-shadow: 0 0 12px white;
+}
+.full-screen {
+    width: 100%;
+    height:auto;
+    padding-bottom: 15px;
+    padding-top: 35px;
+    color: white;
+  background-color: black;
+  background-repeat: no-repeat;
+  }
+  @media screen and (max-width:768px) {
+    .full-screen {
+      width: 100%;
+      color: white;
+      height:auto;
+      padding-bottom: 15px;
+      padding-top: 40px;
+    background-color: black;
+    display: flex;
+    background-repeat: no-repeat;
+      background-position: right;
+    align-items: center;
+    justify-content: center;
+    }
+}

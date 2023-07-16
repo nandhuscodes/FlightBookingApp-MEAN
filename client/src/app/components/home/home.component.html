@@ -1,0 +1,408 @@
+<app-header></app-header>
+<div class="main-container fade-in">
+    <div class="home-container" id="home">
+        <div class="body-container">
+            <div class="container text-light" id="banner">
+                <div style="align-items: center; display: flex; flex-direction: column; justify-content: center;">
+                    <h1>Say Yes to the world</h1>
+                <p>Find your flight and explore the world with us. We will take care of the rest</p>
+                </div>
+                <div class="d-flex align-items-center mb-2" style="gap: 10px;">
+                    <input type="checkbox" class="checkbox" (change)="onRoundTripChange($event)"> <label style="font-size: 20px; margin-top: 10px; font-weight: bold;">Round Trip</label>
+                  </div>
+                <div class="input-container mb-4 text-light shadow">
+                    <div class="col-lg-6">
+                        <div class="input-field-container ip1">
+                            <label for="departure">Departure</label>
+                            <select name="from" id="from" class="input-field" [(ngModel)]="selectedFrom">
+                              <option value="" selected disabled>Departure City</option>
+                              <option value="Mumbai">Mumbai</option>
+                              <option value="Chennai">Chennai</option>
+                              <option value="Banglore">Banglore</option>
+                              <option value="Coimbatore">Coimbatore</option>
+                              <option value="Delhi">Delhi</option>
+                              <option value="Hyderabad">Hyderabad</option>
+                              <option value="Pune">Pune</option>
+                              <option value="Kochi">Kochi</option>
+                              <option value="Kolkata">Kolkata</option>
+                              <option value="Ahmedabad">Ahmedabad</option>
+                              <option value="Patna">Patna</option>
+                              <option value="Goa">Goa</option>
+                              <option value="Madurai">Madurai</option>
+                              <option value="Nagpur">Nagpur</option>
+                              <option value="Guwahati">Guwahati</option>
+                              <option value="Bagdogra">Bagdogra</option>
+                              <!-- Add more options as needed -->
+                            </select>
+                          </div>
+                          <div class="input-field-container ip2">
+                            <label for="journey">Journey Date</label>
+                            <input type="date" class="input-field" [(ngModel)]="selectedDate" (change)="checkSelectedDate()" id="journey-date">
+                          </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="input-field-container ip1">
+                            <label for="destination">Destination</label>
+                            <select name="to" id="to" class="input-field" [(ngModel)]="selectedTo">
+                              <option value="" selected disabled>Destination City</option>
+                              <option value="Mumbai">Mumbai</option>
+                              <option value="Chennai">Chennai</option>
+                              <option value="Banglore">Banglore</option>
+                              <option value="Coimbatore">Coimbatore</option>
+                              <option value="Delhi">Delhi</option>
+                              <option value="Hyderabad">Hyderabad</option>
+                              <option value="Pune">Pune</option>
+                              <option value="Kochi">Kochi</option>
+                              <option value="Kolkata">Kolkata</option>
+                              <option value="Ahmedabad">Ahmedabad</option>
+                              <option value="Patna">Patna</option>
+                              <option value="Goa">Goa</option>
+                              <option value="Madurai">Madurai</option>
+                              <option value="Nagpur">Nagpur</option>
+                              <option value="Guwahati">Guwahati</option>
+                              <option value="Bagdogra">Bagdogra</option>
+                              <!-- Add more options as needed -->
+                            </select>
+                          </div>
+                          <div class="input-field-container ip2" *ngIf="roundTrip">
+                            <label for="return">Return Date</label>
+                            <input type="date" id="return-date" class="input-field" [(ngModel)]="returnDate" (change)="checkReturnDate()">
+                          </div>
+                          <div class="button-container" style="display: flex; align-items: flex-start;">
+                            <label for=""></label>
+                            <button class="button" (click)="search()" [disabled]="!isDestinationFormValid()">Search</button>
+                        </div>
+                    </div>
+                  </div>
+                  
+                <p class="error-message text-danger extra" style="font-weight: bold; font-size: 28px;" *ngIf="error">{{ error }}</p>
+                <p *ngIf="isSame" class="text-danger extra" style="font-weight: bold; font-size: 28px;">Departure and
+                    destination shouldn't be same</p>
+                <div class="text-center extra" *ngIf="isLoading" style="margin-top: 150px;">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <div class="row text-light" style="width: 800px; margin-top: 75px; align-items: flex-end;" id="avail" *ngIf="flights.length === 0">
+                    <h1>Available Flights be displayed here</h1>
+                    <p>along with flight details</p>
+                </div>
+                <div class="row text-light" style="width: 800px; align-items: flex-end;" id="avail" *ngIf="flights.length !== 0 && !isLoading">
+                    <h1>Available Flights</h1>
+                    <div class="col-md-12" *ngFor="let flight of flights">
+                        <div class="card mb-4 shadow">
+                            <div class="card-body d-flex align-items-center justify-content-between"
+                                style="width: 100%; overflow: auto;gap: 10px;">
+                                <div>
+                                    <h5 class="card-title">{{ flight.airline }}</h5>
+                                    <p class="card-text">Flight Number: {{ flight.flightNumber }}</p>
+                                </div>
+                                <div>
+                                    <p class="card-text">Origin: {{ flight.origin }}</p>
+                                    <p class="card-text" style=" color: #9c9c9c;">Departure Time: {{
+                                        flight.departureTime }}</p>
+                                </div>
+                                <div>
+                                    <p class="card-text">Destination: {{ flight.destination }}</p>
+                                    <p class="card-text" style="color: #9c9c9c;">Arrival Time: {{ flight.arrivalTime }}</p>
+                                </div>
+                                <div>
+                                    <p class="card-text">Price: {{ flight.price }}</p>
+                                    <p class="card-text" style="color: #9c9c9c;">Total Seats: {{
+                                        flight.seatsAvailable  }}</p>
+                                </div>
+                                <button class="button" (click)="openModal(flight,flight._id)">BOOK</button>
+                                <ng-template #content let-modal>
+                                    <div class="modal-header bg-dark text-light">
+                                        <h4 class="modal-title">Select Seats and Fill Details</h4>
+                                        <button type="button" class="close" style="color: white;" aria-label="Close"
+                                            (click)="modal.dismiss()">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body text-light bg-dark">
+                                        <!-- Seat selection and details form -->
+                                        <!-- ... -->
+                                        <!-- Seat selection grid -->
+                                        <div class="seat-grid">
+                                            <div class="row d-flex" *ngFor="let row of rows">
+                                                <button class="btn seat d-flex text-light" *ngFor="let seat of row.seats"
+                                                    [ngClass]="{
+                                                     'selected': selectedSeats.includes(seat),
+                                                     'green-bg': selectedSeats.includes(seat),
+                                                     'bg-secondary': bookedSeats.includes(seat),
+                                                     'disabled': bookedSeats.includes(seat)
+                                                   }" (click)="selectSeat(seat, flight.price)">
+                                                    {{ seat }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- Selected seats display -->
+                                        <div class="selected-seats">
+                                            <p>Selected Seats: {{ selectedSeats.join(', ') }}</p>
+                                            <p>Total Price: {{totalPrice}} RS</p>
+                                        </div>
+                                        <div class="form-container" style="display: flex; justify-content: center; align-items: center;">
+                                            <div *ngFor="let seat of selectedSeats; let i = index">
+                                                <div class="card p-2 bg-dark text-light">
+                                                    <h4>{{ seat }}</h4>
+                                                    <input type="text" placeholder="Enter Passenger name" class="p-2"
+                                                        (input)="updatePassengerName(i, $event)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br><br>
+                                        <label for="payment" class="mt-2 mb-2">Payment Method</label>
+                                        <select name="method" id="payment" class="input-field"
+                                            [(ngModel)]="selectedMethod">
+                                            <option value="" selected disabled>Select Payment Method</option>
+                                            <option value="creditCard">Credit Cart</option>
+                                            <option value="debitCard">Debit Card</option>
+                                            <!-- Add more options as needed -->
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer bg-dark text-light">
+                                        <button type="button" class="btn btn-danger"
+                                            (click)="modal.dismiss()"><i class="fas fa-times"></i></button>
+                                        <button type="button" class="btn btn-success" (click)="confirmBooking()"
+                                            [disabled]="selectedSeats.length === 0 || passengers.length !== selectedSeats.length"><i class="fas fa-check"></i></button>
+                                    </div>
+                                </ng-template>
+                                <!-- Payment Modal -->
+                                <ng-template #payment let-modal *ngIf="selectedMethod === 'creditCard'">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Payment Details</h5>
+                                                <button type="button" class="close" aria-label="Close"
+                                                    (click)="modal.dismiss()">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- Payment content goes here -->
+                                                <p>Please enter your credit card details:</p>
+                                                <!-- Credit card input fields -->
+                                                <input type="text" placeholder="Card Number" [(ngModel)]="cardNumber"
+                                                    class="form-control mb-2">
+                                                <input type="text" placeholder="Expiration Date"
+                                                    [(ngModel)]="expirationDate" class="form-control mb-2">
+                                                <input type="text" placeholder="CVV" [(ngModel)]="cvv"
+                                                    class="form-control mb-2">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    (click)="modal.dismiss()">Close</button>
+                                                <button type="button" class="btn btn-primary"
+                                                    (click)="onPayment()" routerLink="/"
+                                                    [disabled]="!isPaymentFormValid()">Pay Now</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+
+                                <ng-template #payment let-modal *ngIf="selectedMethod === 'debitCard'">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Payment Details</h5>
+                                                <button type="button" class="close" aria-label="Close"
+                                                    (click)="modal.dismiss()">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- Payment content goes here -->
+                                                <p>Please enter your debit card details:</p>
+                                                <!-- Debit card input fields -->
+                                                <input type="text" placeholder="Card Number" [(ngModel)]="cardNumber"
+                                                    class="form-control mb-2">
+                                                <input type="text" placeholder="Expiration Date"
+                                                    [(ngModel)]="expirationDate" class="form-control mb-2">
+                                                <input type="text" placeholder="CVV" [(ngModel)]="cvv"
+                                                    class="form-control mb-2">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    (click)="modal.dismiss()">Close</button>
+                                                <button type="button" class="btn btn-primary"
+                                                    (click)="onPayment()" routerLink="/"
+                                                    [disabled]="!isPaymentFormValid()">Pay Now</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="image-container">
+                
+                <img src="../../../assets/main.png" alt="Image" class="image">
+            </div>
+        </div>
+    </div>
+    <section class="section-about p-4 shadow">
+        <div id="about" class="container">
+            <h2 class="section-title from">Popular Flight Routes</h2>
+            <div class="row">
+                <div class="col-lg-4">
+                    <ul class="route-list">
+                        <li class="from">Mumbai Flights</li>
+                        <li>To: Goa, Delhi, Bangalore, Ahmedabad</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="route-list">
+                        <li class="from" >Chennai Flights</li>
+                        <li>To: Mumbai, Delhi, Madurai, Coimbatore</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="route-list">
+                        <li class="from">Bangalore Flights</li>
+                        <li>To: Mumbai, Delhi, Goa, Hyderabad</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="route-list">
+                        <li class="from">Coimbatore Flights</li>
+                        <li>To: Chennai, Bangalore, Delhi, Hyderabad</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="route-list">
+                        <li class="from">Delhi Flights</li>
+                        <li>To: Mumbai, Goa, Bangalore, Pune</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="route-list">
+                        <li class="from">Hyderabad Flights</li>
+                        <li>To: Mumbai, Goa, Bangalore, Delhi</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="route-list">
+                        <li class="from">Pune Flights</li>
+                        <li>To: Goa, Delhi, Bangalore, Nagpur</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="route-list">
+                        <li class="from">Kochi Flights</li>
+                        <li>To: Delhi, Bangalore, Mumbai, Guwahati</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="route-list">
+                        <li class="from">Kolkata Flights</li>
+                        <li>To: Mumbai, Delhi, Bangalore, Bagdogra</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="route-list">
+                        <li class="from">Ahmedabad Flights</li>
+                        <li>To: Mumbai, Delhi, Bangalore, Goa</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="route-list">
+                        <li class="from">Patna Flights</li>
+                        <li>To: Delhi, Bangalore, Mumbai, Kolkata</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="route-list">
+                        <li class="from">Goa Flights</li>
+                        <li>To: Mumbai, Delhi, Bangalore, Hyderabad</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="airline-interlinking-list-cntnr" id="airlines">
+            <div class="airline-interlinking-list">
+              <img class="airline-img" src="https://images.ixigo.com/img/common-resources/airline-new/6E.png" height="42" width="50" alt="Indigo Airlines">
+              <a class="airline-name">Indigo Airlines</a>
+            </div>
+            <div class="airline-interlinking-list">
+              <img class="airline-img" src="https://images.ixigo.com/img/common-resources/airline-new/AI.png" height="42" width="50" alt="Air India">
+              <a class="airline-name">Air India</a>
+            </div>
+            <div class="airline-interlinking-list">
+              <img class="airline-img" src="https://images.ixigo.com/img/common-resources/airline-new/IX.png" height="42" width="50" alt="Air India Express">
+              <a class="airline-name">Air India Express</a>
+            </div>
+            <div class="airline-interlinking-list">
+              <img class="airline-img" src="https://images.ixigo.com/img/common-resources/airline-new/I5.png" height="42" width="50" alt="Air Asia India">
+              <a class="airline-name">Air Asia India</a>
+            </div>
+            <div class="airline-interlinking-list">
+              <img class="airline-img" src="https://images.ixigo.com/img/common-resources/airline-new/QP.png" height="42" width="50" alt="Akasa Air">
+              <a class="airline-name">Akasa Air</a>
+            </div>
+            <div class="airline-interlinking-list">
+              <img class="airline-img" src="https://images.ixigo.com/img/common-resources/airline-new/UK.png" height="42" width="50" alt="Vistara Airline">
+              <a class="airline-name">Vistara Airline</a>
+            </div>
+            <div class="airline-interlinking-list">
+              <img class="airline-img" src="https://images.ixigo.com/img/common-resources/airline-new/SG.png" height="42" width="50" alt="SpiceJet">
+              <a class="airline-name">SpiceJet</a>
+            </div>
+          </div>
+    </section>    
+    <footer id="contact" style="background-color: black;">
+        <div class="container text-light">
+          <div class="footer-links">
+            <div class="footer-column">
+              <h4>Contact Us</h4>
+              <ul>
+                <li>123 Street, City</li>
+                <li>Country</li>
+                <li>Phone: 123-456-7890</li>
+                <li>Email: info@example.com</li>
+              </ul>
+            </div>
+            <div class="footer-column">
+              <h4>Quick Links</h4>
+              <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#airlines">Airlines</a></li>
+                <li><a href="/login">Login</a></li>
+              </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Developers</h4>
+              <div style="flex-direction: row">
+                <ul style="display: flex;flex-direction: column;">
+                    <li>Nandhini S</li>
+                    <li>Pavithra S</li>
+                </ul>
+                <ul style="display: flex; flex-direction: column;">
+                    <li>Rithika Ezhil</li>
+                    <li>Pavitra P</li>
+                </ul>
+            </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-light">
+        <div class="footer-bottom">
+            <h4>Follow Us</h4>
+            <div class="social-media-icons" style="display: flex; flex-direction: row; justify-content: center;">
+              <h5><i class="fab fa-facebook"></i></h5>
+              <h5><i class="fab fa-twitter"></i></h5>
+              <h5><i class="fab fa-instagram"></i></h5>
+              <h5><i class="fab fa-linkedin"></i></h5>
+            </div>
+          </div>
+        <div class="footer-bottom text-light">
+          &copy; 2023 Flight Booking App. All rights reserved.
+        </div>
+    </div>
+      </footer>
+      

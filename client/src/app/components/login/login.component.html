@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-lg ">
+    <a href="/"><img class="navbar-brand" src="assets/logo.png" alt="" style="width: 50px; height: 55px; margin-left: 10px;"></a>
+    <a class="navbar-brand" routerLink="/">Aero<span style="color: #FFC300;">Book</span></a>
+</nav>
+<div class="full-screen fade-in">
+    <div class="container">
+        <div class="login-container">
+            <div class="card  text-light">
+                <form [formGroup]="regForm" #r="ngForm" (ngSubmit)="onSubmit(r.value)" class="form">
+                    <h2 class="heading text-center">Login</h2>
+                    <div class="form-group mb-2">
+                        <label for="email">Email</label>
+                        <input placeholder="Enter email" type="text" class="form-control" id="email" formControlName="email" required>
+                        <div *ngIf="regForm.controls['email'].touched && regForm.controls['email']?.['errors']">
+                            <div *ngIf="regForm.controls['email']?.['errors']?.['required']" class="error-message text-danger">
+                                Email is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="password">Password</label>
+                        <div class="input-group">
+                            <input name="password" type="{{passwordType}}" name="password" [(ngModel)]="password" class="form-control"  placeholder="Enter password" style="width: 120px;" class="form-control" id="password" formControlName="password" required>
+                            <span style="margin:18px;" (click)="togglePassword()">
+                              <img src="../../../assets/monk_cl.png" style="width: 25px;height: 25px;" *ngIf="passwordType === 'password'" />
+                              <img src="../../../assets/monk_op.png" style="width: 25px;height: 25px;" *ngIf="passwordType === 'text'" />
+                            </span>
+                          </div>
+                        <div *ngIf="regForm.controls['password'].touched && regForm.controls['password']?.['errors']">
+                            <div *ngIf="regForm.controls['password']?.['errors']?.['required']"
+                                class="error-message text-danger">
+                                Password is required
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn mt-4" style="margin-left: 35%;" [disabled]="regForm.invalid">Log In</button>
+                    <br><br>
+                    <div class="mt-2">Don't have an account? <a routerLink="/register" class="mt-2">click here</a></div>
+                    Airline? <a routerLink="/airline-login" class="mt-4">click here.</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
